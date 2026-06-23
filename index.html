@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle de EPI</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f7f7f6;color:#1a1a1a;font-size:15px;line-height:1.5}
+
+.page{max-width:1100px;margin:0 auto;padding:24px 16px 64px}
+
+/* Header */
+.header{display:flex;align-items:center;gap:10px;margin-bottom:28px;flex-wrap:wrap}
+.header h1{font-size:19px;font-weight:600;color:#111;flex:none}
+.header-sep{flex:1;min-width:8px}
+.search-wrap{position:relative;flex:1;min-width:180px;max-width:280px}
+.search-wrap input{width:100%;padding:8px 12px 8px 34px;border:1px solid #e0e0db;border-radius:8px;background:#fff;font-size:14px;outline:none;transition:border .15s}
+.search-wrap input:focus{border-color:#3b82f6}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#bbb;font-size:14px;pointer-events:none}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:background .15s}
+.btn-primary{background:#3b82f6;color:#fff}
+.btn-primary:hover{background:#2563eb}
+.btn-secondary{background:#fff;color:#374151;border:1px solid #e0e0db}
+.btn-secondary:hover{background:#f3f4f6}
+.btn-danger{background:#fff;color:#dc2626;border:1px solid #fca5a5}
+.btn-danger:hover{background:#fef2f2}
+.btn-sm{padding:5px 10px;font-size:12px}
+
+/* Section title */
+.section-label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9ca3af;margin:28px 0 10px}
+
+/* Simple EPIs table */
+.table-wrap{background:#fff;border:1px solid #e8e8e4;border-radius:12px;overflow:hidden;margin-bottom:8px}
+table{width:100%;border-collapse:collapse}
+thead th{font-size:11px;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em;padding:10px 14px;border-bottom:1px solid #f0f0ec;text-align:left;background:#fafaf9;white-space:nowrap}
+thead th.center{text-align:center}
+tbody tr:hover{background:#fafaf9}
+tbody td{padding:12px 14px;border-bottom:1px solid #f0f0ec;vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+.epi-name{font-weight:500;color:#111;font-size:14px}
+.qty-big{font-size:17px;font-weight:600;color:#111}
+
+/* Size table */
+.size-table-wrap{background:#fff;border:1px solid #e8e8e4;border-radius:12px;overflow-x:auto;margin-bottom:8px}
+.size-table-wrap table{min-width:600px}
+.size-col{text-align:center;min-width:52px}
+.size-qty{font-size:15px;font-weight:600;color:#111;text-align:center}
+.size-qty.zero{color:#d1d5db}
+.total-col{font-size:14px;font-weight:600;color:#374151;text-align:center}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600;white-space:nowrap}
+.badge-ok{background:#dcfce7;color:#166534}
+.badge-low{background:#fef3c7;color:#92400e}
+.badge-critical{background:#fee2e2;color:#991b1b}
+
+.action-btn{background:#f3f4f6;border:none;border-radius:6px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:background .15s;flex-shrink:0}
+.action-btn:hover{background:#e5e7eb}
+
+/* Overlay */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:flex-start;justify-content:center;z-index:100;padding:24px 16px;overflow-y:auto}
+.overlay.hidden{display:none}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:440px;box-shadow:0 8px 40px rgba(0,0,0,.14);margin:auto}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid #f0f0ec}
+.modal-header h2{font-size:15px;font-weight:600}
+.modal-close{background:none;border:none;cursor:pointer;font-size:17px;color:#9ca3af;line-height:1;border-radius:4px;padding:2px 4px}
+.modal-close:hover{color:#374151}
+.modal-body{padding:16px 20px}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;padding:12px 20px;border-top:1px solid #f0f0ec;background:#fafaf9;border-radius:0 0 14px 14px}
+
+/* Form */
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;font-weight:500;color:#374151;margin-bottom:5px}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:8px 11px;border:1px solid #e0e0db;border-radius:8px;font-size:14px;outline:none;transition:border .15s;font-family:inherit;background:#fff}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:#3b82f6}
+.form-group textarea{resize:none;height:66px}
+
+/* Action cards */
+.ac-qty{background:#f8f8f7;border-radius:10px;padding:12px;text-align:center;margin-bottom:14px}
+.ac-qty .aq-label{font-size:11px;color:#9ca3af;margin-bottom:2px}
+.ac-qty .aq-num{font-size:26px;font-weight:700;color:#111}
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.action-card{border:1px solid #e8e8e4;border-radius:10px;padding:12px;cursor:pointer;text-align:center;transition:border .15s,background .15s}
+.action-card:hover{border-color:#3b82f6;background:#eff6ff}
+.action-card .ac-icon{font-size:20px;margin-bottom:4px}
+.action-card .ac-label{font-size:12px;font-weight:500;color:#374151}
+
+/* Size grid for entrada/saida */
+.size-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-bottom:14px}
+.size-input-wrap{display:flex;flex-direction:column;align-items:center;gap:4px}
+.size-input-wrap .size-label{font-size:12px;font-weight:500;color:#6b7280}
+.size-input-wrap input{width:100%;padding:6px 8px;border:1px solid #e0e0db;border-radius:7px;font-size:14px;font-weight:600;text-align:center;outline:none;transition:border .15s}
+.size-input-wrap input:focus{border-color:#3b82f6}
+
+/* History */
+.history-section{margin-top:36px}
+.history-section h2{font-size:14px;font-weight:600;color:#374151;margin-bottom:10px}
+.history-list{background:#fff;border:1px solid #e8e8e4;border-radius:12px;overflow:hidden}
+.history-item{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-bottom:1px solid #f0f0ec}
+.history-item:last-child{border-bottom:none}
+.hi-date{font-size:11px;color:#9ca3af;min-width:68px;padding-top:2px}
+.hi-name{font-size:13px;font-weight:500;color:#111}
+.hi-detail{font-size:12px;color:#6b7280;margin-top:1px}
+.hi-badge{font-size:13px;font-weight:700}
+.hi-in{color:#059669}
+.hi-out{color:#dc2626}
+.empty{text-align:center;padding:28px;color:#9ca3af;font-size:13px}
+
+@media(max-width:640px){
+  .header{gap:8px}
+  .header-sep{display:none}
+  .search-wrap{max-width:none;width:100%;order:4;flex:none}
+  .modal{max-width:100%}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <h1>📦 Controle de EPI</h1>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Pesquisar EPI..." oninput="render()">
+    </div>
+    <div class="header-sep"></div>
+    <button class="btn btn-secondary" onclick="exportExcel()">⬇ Exportar Excel</button>
+    <button class="btn btn-primary" onclick="openNew()">+ Novo EPI</button>
+  </div>
+
+  <!-- EPIs com tamanho -->
+  <div id="sizedSection">
+    <div class="section-label">EPIs com tamanho</div>
+    <div class="table-wrap size-table-wrap" id="sizedTableWrap">
+      <table id="sizedTable"></table>
+    </div>
+  </div>
+
+  <!-- EPIs simples -->
+  <div id="simpleSection">
+    <div class="section-label">EPIs sem tamanho</div>
+    <div class="table-wrap" id="simpleTableWrap">
+      <table id="simpleTable"></table>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="history-section">
+    <h2>📋 Histórico de movimentações</h2>
+    <div id="historyList" class="history-list"></div>
+  </div>
+</div>
+
+<!-- OVERLAY: Detail -->
+<div class="overlay hidden" id="overlayDetail">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="detailTitle">EPI</h2>
+      <button class="modal-close" onclick="closeAll()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="ac-qty">
+        <div class="aq-label">Quantidade total</div>
+        <div class="aq-num" id="detailQty">0</div>
+      </div>
+      <div id="detailSizeBreakdown"></div>
+      <div class="action-grid">
+        <div class="action-card" onclick="openEntrada()"><div class="ac-icon">➕</div><div class="ac-label">Entrada</div></div>
+        <div class="action-card" onclick="openSaida()"><div class="ac-icon">➖</div><div class="ac-label">Saída</div></div>
+        <div class="action-card" onclick="openEdit()"><div class="ac-icon">✏️</div><div class="ac-label">Editar</div></div>
+        <div class="action-card" onclick="scrollToHistory()"><div class="ac-icon">📋</div><div class="ac-label">Ver histórico</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY: Entrada -->
+<div class="overlay hidden" id="overlayEntrada">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>➕ Entrada de estoque</h2>
+      <button class="modal-close" onclick="closeAll()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="entradaSizeGrid"></div>
+      <div class="form-group" id="entradaQtyWrap">
+        <label>Quantidade</label>
+        <input type="number" id="entradaQty" min="1" value="1">
+      </div>
+      <div class="form-group">
+        <label>Observação (opcional)</label>
+        <textarea id="entradaObs" placeholder="Ex: Recebido do fornecedor"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeAll()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveEntrada()">Salvar entrada</button>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY: Saída -->
+<div class="overlay hidden" id="overlaySaida">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>➖ Saída de estoque</h2>
+      <button class="modal-close" onclick="closeAll()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="saidaSizeGrid"></div>
+      <div class="form-group" id="saidaQtyWrap">
+        <label>Quantidade</label>
+        <input type="number" id="saidaQty" min="1" value="1">
+      </div>
+      <div class="form-group">
+        <label>Nome do funcionário</label>
+        <input type="text" id="saidaFunc" placeholder="Ex: João Silva">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeAll()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveSaida()">Registrar saída</button>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY: Edit -->
+<div class="overlay hidden" id="overlayEdit">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>✏️ Editar EPI</h2>
+      <button class="modal-close" onclick="closeAll()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Nome do EPI</label>
+        <input type="text" id="editName">
+      </div>
+      <div class="form-group">
+        <label>Quantidade mínima para alerta</label>
+        <input type="number" id="editMin" min="0" value="5">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" onclick="deleteEPI()">Excluir</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-secondary" onclick="closeAll()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveEdit()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY: New EPI -->
+<div class="overlay hidden" id="overlayNew">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>+ Novo EPI</h2>
+      <button class="modal-close" onclick="closeAll()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Nome do EPI</label>
+        <input type="text" id="newName" placeholder="Ex: Luva de látex">
+      </div>
+      <div class="form-group">
+        <label>Tipo de controle</label>
+        <select id="newType" onchange="toggleNewSizeType()">
+          <option value="simple">Sem tamanho (quantidade única)</option>
+          <option value="calcado">Com tamanho — Calçado (37–44)</option>
+          <option value="roupa">Com tamanho — Roupa (M, G, GG)</option>
+        </select>
+      </div>
+      <div class="form-group" id="newQtyWrap">
+        <label>Quantidade inicial</label>
+        <input type="number" id="newQty" min="0" value="0">
+      </div>
+      <div id="newSizeGrid" class="hidden"></div>
+      <div class="form-group">
+        <label>Quantidade mínima para alerta</label>
+        <input type="number" id="newMin" min="0" value="5">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeAll()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveNew()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'epi_v3';
+const CALCADO_SIZES = [37,38,39,40,41,42,43,44];
+const ROUPA_SIZES = ['M','G','GG'];
+
+function emptySizes(type){
+  const sizes = type==='calcado'?CALCADO_SIZES:ROUPA_SIZES;
+  const obj={};
+  sizes.forEach(s=>obj[s]=0);
+  return obj;
+}
+
+const defaultEPIs = [
+  {id:1, name:'Botina preta',   type:'calcado', sizes:emptySizes('calcado'), minQty:5},
+  {id:2, name:'Bota de PVC',    type:'calcado', sizes:emptySizes('calcado'), minQty:5},
+  {id:3, name:'Óculos preto',   type:'simple',  qty:30, minQty:8},
+  {id:4, name:'Respirador facial', type:'simple', qty:4, minQty:6},
+  {id:5, name:'Capa de chuva',  type:'simple',  qty:12, minQty:5},
+  {id:6, name:'Máscara',        type:'simple',  qty:2,  minQty:10},
+  {id:7, name:'Colete',         type:'simple',  qty:8,  minQty:5},
+  {id:8, name:'Camisa',         type:'roupa',   sizes:emptySizes('roupa'),   minQty:3},
+  {id:9, name:'Capacete',       type:'simple',  qty:25, minQty:8},
+];
+
+let state = loadState();
+let currentId = null;
+
+function loadState(){
+  try{
+    const r = localStorage.getItem(STORAGE_KEY);
+    if(r) return JSON.parse(r);
+  }catch(e){}
+  return {epis: defaultEPIs.map(e=>JSON.parse(JSON.stringify(e))), history:[], nextId:10};
+}
+
+function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+function totalQty(epi){
+  if(epi.type==='simple') return epi.qty||0;
+  return Object.values(epi.sizes||{}).reduce((a,b)=>a+b,0);
+}
+
+function statusInfo(epi){
+  const q = totalQty(epi);
+  if(q===0) return {label:'Sem estoque', cls:'badge-critical'};
+  if(q <= epi.minQty) return {label:'Acabando', cls:'badge-low'};
+  return {label:'Bom', cls:'badge-ok'};
+}
+
+function fmtDate(ts){
+  return new Date(ts).toLocaleDateString('pt-BR');
+}
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function getSizes(type){ return type==='calcado'?CALCADO_SIZES:ROUPA_SIZES; }
+
+/* ── Render ── */
+function render(){
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const epis = state.epis.filter(e=>e.name.toLowerCase().includes(q));
+  renderSized(epis.filter(e=>e.type!=='simple'));
+  renderSimple(epis.filter(e=>e.type==='simple'));
+  renderHistory();
+}
+
+function renderSized(epis){
+  const wrap = document.getElementById('sizedSection');
+  if(!epis.length){ wrap.style.display='none'; return; }
+  wrap.style.display='';
+
+  // group by type
+  const calcado = epis.filter(e=>e.type==='calcado');
+  const roupa   = epis.filter(e=>e.type==='roupa');
+
+  let html = '';
+
+  if(calcado.length){
+    html += buildSizedTable(calcado, CALCADO_SIZES);
+  }
+  if(roupa.length){
+    if(calcado.length) html += '<div style="height:10px"></div>';
+    html += buildSizedTable(roupa, ROUPA_SIZES);
+  }
+
+  document.getElementById('sizedTableWrap').innerHTML = html;
+}
+
+function buildSizedTable(epis, sizes){
+  const thSizes = sizes.map(s=>`<th class="size-col center">${s}</th>`).join('');
+  let rows = epis.map(epi=>{
+    const s = statusInfo(epi);
+    const total = totalQty(epi);
+    const sizeCells = sizes.map(sz=>{
+      const v = epi.sizes[sz]||0;
+      return `<td class="size-qty${v===0?' zero':''}">${v}</td>`;
+    }).join('');
+    return `<tr>
+      <td class="epi-name" style="min-width:130px">${esc(epi.name)}</td>
+      ${sizeCells}
+      <td class="total-col" style="font-weight:700;min-width:54px">${total}</td>
+      <td><span class="badge ${s.cls}">${s.label}</span></td>
+      <td style="text-align:center"><button class="action-btn" onclick="openDetail(${epi.id})">⚙</button></td>
+    </tr>`;
+  }).join('');
+
+  return `<table>
+    <thead><tr>
+      <th>Nome</th>
+      ${thSizes}
+      <th class="center" style="min-width:54px">Total</th>
+      <th>Situação</th>
+      <th style="width:46px"></th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+function renderSimple(epis){
+  const wrap = document.getElementById('simpleSection');
+  if(!epis.length){ wrap.style.display='none'; return; }
+  wrap.style.display='';
+  const tbody = epis.map(epi=>{
+    const s = statusInfo(epi);
+    return `<tr>
+      <td class="epi-name">${esc(epi.name)}</td>
+      <td style="color:#9ca3af;font-size:13px">${epi.minQty}</td>
+      <td><span class="qty-big">${epi.qty||0}</span></td>
+      <td><span class="badge ${s.cls}">${s.label}</span></td>
+      <td style="text-align:center"><button class="action-btn" onclick="openDetail(${epi.id})">⚙</button></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('simpleTable').innerHTML = `
+    <thead><tr>
+      <th>Nome</th><th>Qtd. mínima</th><th>Quantidade</th><th>Situação</th><th style="width:46px"></th>
+    </tr></thead>
+    <tbody>${tbody}</tbody>`;
+}
+
+function renderHistory(){
+  const el = document.getElementById('historyList');
+  if(!state.history.length){ el.innerHTML=`<div class="empty">Nenhuma movimentação registrada.</div>`; return; }
+  el.innerHTML = [...state.history].reverse().map(h=>{
+    const cls = h.type==='entrada'?'hi-in':'hi-out';
+    const sign = h.type==='entrada'?'+':'-';
+    let detail = '';
+    if(h.type==='saida' && h.func) detail = `Funcionário: ${esc(h.func)}`;
+    if(h.type==='entrada' && h.obs) detail = esc(h.obs);
+    let sizeInfo = '';
+    if(h.sizes){
+      const parts = Object.entries(h.sizes).filter(([,v])=>v>0).map(([k,v])=>`${k}: ${v}`);
+      if(parts.length) sizeInfo = parts.join(' · ');
+    }
+    return `<div class="history-item">
+      <div class="hi-date">${fmtDate(h.ts)}</div>
+      <div>
+        <div class="hi-name"><span class="hi-badge ${cls}">${sign}${h.qty}</span> ${esc(h.epiName)}</div>
+        ${sizeInfo?`<div class="hi-detail">${sizeInfo}</div>`:''}
+        ${detail?`<div class="hi-detail">${detail}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── Modals ── */
+function closeAll(){ document.querySelectorAll('.overlay').forEach(o=>o.classList.add('hidden')); }
+function show(id){ document.getElementById(id).classList.remove('hidden'); }
+
+function openDetail(id){
+  currentId = id;
+  const epi = state.epis.find(e=>e.id===id);
+  document.getElementById('detailTitle').textContent = epi.name;
+  const total = totalQty(epi);
+  document.getElementById('detailQty').textContent = total;
+
+  let breakdown = '';
+  if(epi.type!=='simple'){
+    const sizes = getSizes(epi.type);
+    breakdown = `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;justify-content:center">
+      ${sizes.map(s=>{
+        const v = epi.sizes[s]||0;
+        return `<div style="text-align:center;background:#f8f8f7;border-radius:8px;padding:6px 10px;min-width:48px">
+          <div style="font-size:10px;color:#9ca3af;font-weight:600">${s}</div>
+          <div style="font-size:17px;font-weight:700;color:${v===0?'#d1d5db':'#111'}">${v}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+  document.getElementById('detailSizeBreakdown').innerHTML = breakdown;
+  show('overlayDetail');
+}
+
+function buildSizeInputGrid(containerId, epi, mode){
+  const container = document.getElementById(containerId);
+  if(!epi || epi.type==='simple'){ container.innerHTML=''; return; }
+  const sizes = getSizes(epi.type);
+  container.innerHTML = `
+    <div style="font-size:12px;font-weight:500;color:#374151;margin-bottom:8px">
+      Quantidade por tamanho
+    </div>
+    <div class="size-grid">
+      ${sizes.map(s=>{
+        const cur = epi.sizes[s]||0;
+        const hint = mode==='saida' ? ` (estoque: ${cur})` : '';
+        return `<div class="size-input-wrap">
+          <span class="size-label">${s}${hint}</span>
+          <input type="number" min="0" value="0" id="${containerId}_${s}" placeholder="0">
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function openEntrada(){
+  const epi = state.epis.find(e=>e.id===currentId);
+  document.getElementById('entradaObs').value='';
+  const isSimple = !epi || epi.type==='simple';
+  document.getElementById('entradaQtyWrap').style.display = isSimple?'':'none';
+  document.getElementById('entradaQty').value=1;
+  buildSizeInputGrid('entradaSizeGrid', epi, 'entrada');
+  closeAll(); show('overlayEntrada');
+}
+
+function openSaida(){
+  const epi = state.epis.find(e=>e.id===currentId);
+  document.getElementById('saidaFunc').value='';
+  const isSimple = !epi || epi.type==='simple';
+  document.getElementById('saidaQtyWrap').style.display = isSimple?'':'none';
+  document.getElementById('saidaQty').value=1;
+  buildSizeInputGrid('saidaSizeGrid', epi, 'saida');
+  closeAll(); show('overlaySaida');
+}
+
+function openEdit(){
+  const epi = state.epis.find(e=>e.id===currentId);
+  document.getElementById('editName').value = epi.name;
+  document.getElementById('editMin').value = epi.minQty;
+  closeAll(); show('overlayEdit');
+}
+
+function openNew(){
+  document.getElementById('newName').value='';
+  document.getElementById('newType').value='simple';
+  document.getElementById('newQty').value=0;
+  document.getElementById('newMin').value=5;
+  document.getElementById('newQtyWrap').style.display='';
+  document.getElementById('newSizeGrid').innerHTML='';
+  document.getElementById('newSizeGrid').classList.add('hidden');
+  show('overlayNew');
+}
+
+function toggleNewSizeType(){
+  const type = document.getElementById('newType').value;
+  const isSimple = type==='simple';
+  document.getElementById('newQtyWrap').style.display = isSimple?'':'none';
+  const grid = document.getElementById('newSizeGrid');
+  if(isSimple){ grid.innerHTML=''; grid.classList.add('hidden'); return; }
+  grid.classList.remove('hidden');
+  const sizes = type==='calcado'?CALCADO_SIZES:ROUPA_SIZES;
+  grid.innerHTML = `<div style="font-size:12px;font-weight:500;color:#374151;margin-bottom:8px">Quantidade inicial por tamanho</div>
+    <div class="size-grid">
+      ${sizes.map(s=>`<div class="size-input-wrap">
+        <span class="size-label">${s}</span>
+        <input type="number" min="0" value="0" id="newSize_${s}">
+      </div>`).join('')}
+    </div>`;
+}
+
+/* ── Save actions ── */
+function getSizeInputValues(prefix, type){
+  const sizes = getSizes(type);
+  const obj={};
+  sizes.forEach(s=>{ obj[s]=parseInt(document.getElementById(`${prefix}_${s}`)?.value)||0; });
+  return obj;
+}
+
+function saveEntrada(){
+  const epi = state.epis.find(e=>e.id===currentId);
+  const obs = document.getElementById('entradaObs').value.trim();
+  let qty=0, sizes=null;
+  if(epi.type==='simple'){
+    qty = parseInt(document.getElementById('entradaQty').value)||0;
+    if(qty<=0){ alert('Informe uma quantidade válida.'); return; }
+    epi.qty = (epi.qty||0)+qty;
+  } else {
+    sizes = getSizeInputValues('entradaSizeGrid', epi.type);
+    qty = Object.values(sizes).reduce((a,b)=>a+b,0);
+    if(qty<=0){ alert('Informe pelo menos um tamanho.'); return; }
+    getSizes(epi.type).forEach(s=>{ epi.sizes[s]=(epi.sizes[s]||0)+sizes[s]; });
+  }
+  state.history.push({type:'entrada',epiId:currentId,epiName:epi.name,qty,sizes,obs,ts:Date.now()});
+  save(); closeAll(); render();
+}
+
+function saveSaida(){
+  const epi = state.epis.find(e=>e.id===currentId);
+  const func = document.getElementById('saidaFunc').value.trim();
+  if(!func){ alert('Informe o nome do funcionário.'); return; }
+  let qty=0, sizes=null;
+  if(epi.type==='simple'){
+    qty = parseInt(document.getElementById('saidaQty').value)||0;
+    if(qty<=0){ alert('Informe uma quantidade válida.'); return; }
+    if((epi.qty||0)<qty){ alert('Quantidade insuficiente em estoque.'); return; }
+    epi.qty -= qty;
+  } else {
+    sizes = getSizeInputValues('saidaSizeGrid', epi.type);
+    qty = Object.values(sizes).reduce((a,b)=>a+b,0);
+    if(qty<=0){ alert('Informe pelo menos um tamanho.'); return; }
+    for(const s of getSizes(epi.type)){
+      if((epi.sizes[s]||0) < sizes[s]){ alert(`Estoque insuficiente para o tamanho ${s}.`); return; }
+    }
+    getSizes(epi.type).forEach(s=>{ epi.sizes[s]-=sizes[s]; });
+  }
+  state.history.push({type:'saida',epiId:currentId,epiName:epi.name,qty,sizes,func,ts:Date.now()});
+  save(); closeAll(); render();
+}
+
+function saveEdit(){
+  const name = document.getElementById('editName').value.trim();
+  const minQty = parseInt(document.getElementById('editMin').value)||0;
+  if(!name){ alert('Informe o nome do EPI.'); return; }
+  const epi = state.epis.find(e=>e.id===currentId);
+  epi.name=name; epi.minQty=minQty;
+  save(); closeAll(); render();
+}
+
+function deleteEPI(){
+  if(!confirm('Excluir este EPI?')) return;
+  state.epis = state.epis.filter(e=>e.id!==currentId);
+  save(); closeAll(); render();
+}
+
+function saveNew(){
+  const name = document.getElementById('newName').value.trim();
+  const type = document.getElementById('newType').value;
+  const minQty = parseInt(document.getElementById('newMin').value)||5;
+  if(!name){ alert('Informe o nome.'); return; }
+  const epi = {id:state.nextId++, name, type, minQty};
+  if(type==='simple'){
+    epi.qty = parseInt(document.getElementById('newQty').value)||0;
+  } else {
+    epi.sizes = emptySizes(type);
+    getSizes(type).forEach(s=>{ epi.sizes[s]=parseInt(document.getElementById(`newSize_${s}`)?.value)||0; });
+  }
+  state.epis.push(epi);
+  save(); closeAll(); render();
+}
+
+function scrollToHistory(){ closeAll(); document.querySelector('.history-section').scrollIntoView({behavior:'smooth'}); }
+
+/* ── Export ── */
+function exportExcel(){
+  const wb = XLSX.utils.book_new();
+
+  // Sheet 1: Estoque simples
+  const simple = state.epis.filter(e=>e.type==='simple');
+  const ws1Data = [['Nome','Quantidade','Qtd. Mínima','Situação'],
+    ...simple.map(e=>[e.name, e.qty||0, e.minQty, statusInfo(e).label])];
+  const ws1 = XLSX.utils.aoa_to_sheet(ws1Data);
+  XLSX.utils.book_append_sheet(wb, ws1, 'EPIs simples');
+
+  // Sheet 2: Calçados
+  const calcado = state.epis.filter(e=>e.type==='calcado');
+  if(calcado.length){
+    const ws2Data = [['Nome',...CALCADO_SIZES,'Total','Situação'],
+      ...calcado.map(e=>[e.name,...CALCADO_SIZES.map(s=>e.sizes[s]||0),totalQty(e),statusInfo(e).label])];
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws2Data), 'Calçados');
+  }
+
+  // Sheet 3: Roupas
+  const roupa = state.epis.filter(e=>e.type==='roupa');
+  if(roupa.length){
+    const ws3Data = [['Nome',...ROUPA_SIZES,'Total','Situação'],
+      ...roupa.map(e=>[e.name,...ROUPA_SIZES.map(s=>e.sizes[s]||0),totalQty(e),statusInfo(e).label])];
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws3Data), 'Roupas');
+  }
+
+  // Sheet 4: Histórico
+  const wsHist = [['Data','Tipo','EPI','Qtd Total','Tamanhos','Funcionário/Obs'],
+    ...[...state.history].reverse().map(h=>{
+      const sizes = h.sizes ? Object.entries(h.sizes).filter(([,v])=>v>0).map(([k,v])=>`${k}:${v}`).join(', ') : '';
+      return [fmtDate(h.ts), h.type==='entrada'?'Entrada':'Saída', h.epiName,
+        (h.type==='entrada'?'+':'-')+h.qty, sizes, h.type==='entrada'?(h.obs||''):(h.func||'')];
+    })];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(wsHist), 'Histórico');
+  XLSX.writeFile(wb, 'controle-epi.xlsx');
+}
+
+// Backdrop close
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeAll();}));
+
+render();
+</script>
+</body>
+</html>
