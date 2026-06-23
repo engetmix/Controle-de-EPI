@@ -8,9 +8,9 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f7f7f6;color:#1a1a1a;font-size:15px;line-height:1.5}
-
+ 
 .page{max-width:1100px;margin:0 auto;padding:24px 16px 64px}
-
+ 
 /* Header */
 .header{display:flex;align-items:center;gap:10px;margin-bottom:28px;flex-wrap:wrap}
 .header h1{font-size:19px;font-weight:600;color:#111;flex:none}
@@ -27,10 +27,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-danger{background:#fff;color:#dc2626;border:1px solid #fca5a5}
 .btn-danger:hover{background:#fef2f2}
 .btn-sm{padding:5px 10px;font-size:12px}
-
+ 
 /* Section title */
 .section-label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9ca3af;margin:28px 0 10px}
-
+ 
 /* Simple EPIs table */
 .table-wrap{background:#fff;border:1px solid #e8e8e4;border-radius:12px;overflow:hidden;margin-bottom:8px}
 table{width:100%;border-collapse:collapse}
@@ -41,7 +41,7 @@ tbody td{padding:12px 14px;border-bottom:1px solid #f0f0ec;vertical-align:middle
 tbody tr:last-child td{border-bottom:none}
 .epi-name{font-weight:500;color:#111;font-size:14px}
 .qty-big{font-size:17px;font-weight:600;color:#111}
-
+ 
 /* Size table */
 .size-table-wrap{background:#fff;border:1px solid #e8e8e4;border-radius:12px;overflow-x:auto;margin-bottom:8px}
 .size-table-wrap table{min-width:600px}
@@ -49,16 +49,16 @@ tbody tr:last-child td{border-bottom:none}
 .size-qty{font-size:15px;font-weight:600;color:#111;text-align:center}
 .size-qty.zero{color:#d1d5db}
 .total-col{font-size:14px;font-weight:600;color:#374151;text-align:center}
-
+ 
 /* Badges */
 .badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600;white-space:nowrap}
 .badge-ok{background:#dcfce7;color:#166534}
 .badge-low{background:#fef3c7;color:#92400e}
 .badge-critical{background:#fee2e2;color:#991b1b}
-
+ 
 .action-btn{background:#f3f4f6;border:none;border-radius:6px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:background .15s;flex-shrink:0}
 .action-btn:hover{background:#e5e7eb}
-
+ 
 /* Overlay */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:flex-start;justify-content:center;z-index:100;padding:24px 16px;overflow-y:auto}
 .overlay.hidden{display:none}
@@ -69,14 +69,14 @@ tbody tr:last-child td{border-bottom:none}
 .modal-close:hover{color:#374151}
 .modal-body{padding:16px 20px}
 .modal-footer{display:flex;justify-content:flex-end;gap:8px;padding:12px 20px;border-top:1px solid #f0f0ec;background:#fafaf9;border-radius:0 0 14px 14px}
-
+ 
 /* Form */
 .form-group{margin-bottom:14px}
 .form-group label{display:block;font-size:12px;font-weight:500;color:#374151;margin-bottom:5px}
 .form-group input,.form-group textarea,.form-group select{width:100%;padding:8px 11px;border:1px solid #e0e0db;border-radius:8px;font-size:14px;outline:none;transition:border .15s;font-family:inherit;background:#fff}
 .form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:#3b82f6}
 .form-group textarea{resize:none;height:66px}
-
+ 
 /* Action cards */
 .ac-qty{background:#f8f8f7;border-radius:10px;padding:12px;text-align:center;margin-bottom:14px}
 .ac-qty .aq-label{font-size:11px;color:#9ca3af;margin-bottom:2px}
@@ -86,14 +86,14 @@ tbody tr:last-child td{border-bottom:none}
 .action-card:hover{border-color:#3b82f6;background:#eff6ff}
 .action-card .ac-icon{font-size:20px;margin-bottom:4px}
 .action-card .ac-label{font-size:12px;font-weight:500;color:#374151}
-
+ 
 /* Size grid for entrada/saida */
 .size-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-bottom:14px}
 .size-input-wrap{display:flex;flex-direction:column;align-items:center;gap:4px}
 .size-input-wrap .size-label{font-size:12px;font-weight:500;color:#6b7280}
 .size-input-wrap input{width:100%;padding:6px 8px;border:1px solid #e0e0db;border-radius:7px;font-size:14px;font-weight:600;text-align:center;outline:none;transition:border .15s}
 .size-input-wrap input:focus{border-color:#3b82f6}
-
+ 
 /* History */
 .history-section{margin-top:36px}
 .history-section h2{font-size:14px;font-weight:600;color:#374151;margin-bottom:10px}
@@ -107,7 +107,7 @@ tbody tr:last-child td{border-bottom:none}
 .hi-in{color:#059669}
 .hi-out{color:#dc2626}
 .empty{text-align:center;padding:28px;color:#9ca3af;font-size:13px}
-
+ 
 @media(max-width:640px){
   .header{gap:8px}
   .header-sep{display:none}
@@ -118,7 +118,7 @@ tbody tr:last-child td{border-bottom:none}
 </head>
 <body>
 <div class="page">
-
+ 
   <div class="header">
     <h1>📦 Controle de EPI</h1>
     <div class="search-wrap">
@@ -129,7 +129,7 @@ tbody tr:last-child td{border-bottom:none}
     <button class="btn btn-secondary" onclick="exportExcel()">⬇ Exportar Excel</button>
     <button class="btn btn-primary" onclick="openNew()">+ Novo EPI</button>
   </div>
-
+ 
   <!-- EPIs com tamanho -->
   <div id="sizedSection">
     <div class="section-label">EPIs com tamanho</div>
@@ -137,7 +137,7 @@ tbody tr:last-child td{border-bottom:none}
       <table id="sizedTable"></table>
     </div>
   </div>
-
+ 
   <!-- EPIs simples -->
   <div id="simpleSection">
     <div class="section-label">EPIs sem tamanho</div>
@@ -145,14 +145,14 @@ tbody tr:last-child td{border-bottom:none}
       <table id="simpleTable"></table>
     </div>
   </div>
-
+ 
   <!-- History -->
   <div class="history-section">
     <h2>📋 Histórico de movimentações</h2>
     <div id="historyList" class="history-list"></div>
   </div>
 </div>
-
+ 
 <!-- OVERLAY: Detail -->
 <div class="overlay hidden" id="overlayDetail">
   <div class="modal">
@@ -175,7 +175,7 @@ tbody tr:last-child td{border-bottom:none}
     </div>
   </div>
 </div>
-
+ 
 <!-- OVERLAY: Entrada -->
 <div class="overlay hidden" id="overlayEntrada">
   <div class="modal">
@@ -200,7 +200,7 @@ tbody tr:last-child td{border-bottom:none}
     </div>
   </div>
 </div>
-
+ 
 <!-- OVERLAY: Saída -->
 <div class="overlay hidden" id="overlaySaida">
   <div class="modal">
@@ -225,7 +225,7 @@ tbody tr:last-child td{border-bottom:none}
     </div>
   </div>
 </div>
-
+ 
 <!-- OVERLAY: Edit -->
 <div class="overlay hidden" id="overlayEdit">
   <div class="modal">
@@ -251,7 +251,7 @@ tbody tr:last-child td{border-bottom:none}
     </div>
   </div>
 </div>
-
+ 
 <!-- OVERLAY: New EPI -->
 <div class="overlay hidden" id="overlayNew">
   <div class="modal">
@@ -288,19 +288,19 @@ tbody tr:last-child td{border-bottom:none}
     </div>
   </div>
 </div>
-
+ 
 <script>
 const STORAGE_KEY = 'epi_v3';
 const CALCADO_SIZES = [37,38,39,40,41,42,43,44];
 const ROUPA_SIZES = ['M','G','GG'];
-
+ 
 function emptySizes(type){
   const sizes = type==='calcado'?CALCADO_SIZES:ROUPA_SIZES;
   const obj={};
   sizes.forEach(s=>obj[s]=0);
   return obj;
 }
-
+ 
 const defaultEPIs = [
   {id:1, name:'Botina preta',   type:'calcado', sizes:emptySizes('calcado'), minQty:5},
   {id:2, name:'Bota de PVC',    type:'calcado', sizes:emptySizes('calcado'), minQty:5},
@@ -312,10 +312,10 @@ const defaultEPIs = [
   {id:8, name:'Camisa',         type:'roupa',   sizes:emptySizes('roupa'),   minQty:3},
   {id:9, name:'Capacete',       type:'simple',  qty:25, minQty:8},
 ];
-
+ 
 let state = loadState();
 let currentId = null;
-
+ 
 function loadState(){
   try{
     const r = localStorage.getItem(STORAGE_KEY);
@@ -323,29 +323,29 @@ function loadState(){
   }catch(e){}
   return {epis: defaultEPIs.map(e=>JSON.parse(JSON.stringify(e))), history:[], nextId:10};
 }
-
+ 
 function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-
+ 
 function totalQty(epi){
   if(epi.type==='simple') return epi.qty||0;
   return Object.values(epi.sizes||{}).reduce((a,b)=>a+b,0);
 }
-
+ 
 function statusInfo(epi){
   const q = totalQty(epi);
   if(q===0) return {label:'Sem estoque', cls:'badge-critical'};
   if(q <= epi.minQty) return {label:'Acabando', cls:'badge-low'};
   return {label:'Bom', cls:'badge-ok'};
 }
-
+ 
 function fmtDate(ts){
   return new Date(ts).toLocaleDateString('pt-BR');
 }
-
+ 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
+ 
 function getSizes(type){ return type==='calcado'?CALCADO_SIZES:ROUPA_SIZES; }
-
+ 
 /* ── Render ── */
 function render(){
   const q = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -354,18 +354,18 @@ function render(){
   renderSimple(epis.filter(e=>e.type==='simple'));
   renderHistory();
 }
-
+ 
 function renderSized(epis){
   const wrap = document.getElementById('sizedSection');
   if(!epis.length){ wrap.style.display='none'; return; }
   wrap.style.display='';
-
+ 
   // group by type
   const calcado = epis.filter(e=>e.type==='calcado');
   const roupa   = epis.filter(e=>e.type==='roupa');
-
+ 
   let html = '';
-
+ 
   if(calcado.length){
     html += buildSizedTable(calcado, CALCADO_SIZES);
   }
@@ -373,10 +373,10 @@ function renderSized(epis){
     if(calcado.length) html += '<div style="height:10px"></div>';
     html += buildSizedTable(roupa, ROUPA_SIZES);
   }
-
+ 
   document.getElementById('sizedTableWrap').innerHTML = html;
 }
-
+ 
 function buildSizedTable(epis, sizes){
   const thSizes = sizes.map(s=>`<th class="size-col center">${s}</th>`).join('');
   let rows = epis.map(epi=>{
@@ -394,7 +394,7 @@ function buildSizedTable(epis, sizes){
       <td style="text-align:center"><button class="action-btn" onclick="openDetail(${epi.id})">⚙</button></td>
     </tr>`;
   }).join('');
-
+ 
   return `<table>
     <thead><tr>
       <th>Nome</th>
@@ -406,7 +406,7 @@ function buildSizedTable(epis, sizes){
     <tbody>${rows}</tbody>
   </table>`;
 }
-
+ 
 function renderSimple(epis){
   const wrap = document.getElementById('simpleSection');
   if(!epis.length){ wrap.style.display='none'; return; }
@@ -427,7 +427,7 @@ function renderSimple(epis){
     </tr></thead>
     <tbody>${tbody}</tbody>`;
 }
-
+ 
 function renderHistory(){
   const el = document.getElementById('historyList');
   if(!state.history.length){ el.innerHTML=`<div class="empty">Nenhuma movimentação registrada.</div>`; return; }
@@ -452,18 +452,18 @@ function renderHistory(){
     </div>`;
   }).join('');
 }
-
+ 
 /* ── Modals ── */
 function closeAll(){ document.querySelectorAll('.overlay').forEach(o=>o.classList.add('hidden')); }
 function show(id){ document.getElementById(id).classList.remove('hidden'); }
-
+ 
 function openDetail(id){
   currentId = id;
   const epi = state.epis.find(e=>e.id===id);
   document.getElementById('detailTitle').textContent = epi.name;
   const total = totalQty(epi);
   document.getElementById('detailQty').textContent = total;
-
+ 
   let breakdown = '';
   if(epi.type!=='simple'){
     const sizes = getSizes(epi.type);
@@ -480,7 +480,7 @@ function openDetail(id){
   document.getElementById('detailSizeBreakdown').innerHTML = breakdown;
   show('overlayDetail');
 }
-
+ 
 function buildSizeInputGrid(containerId, epi, mode){
   const container = document.getElementById(containerId);
   if(!epi || epi.type==='simple'){ container.innerHTML=''; return; }
@@ -500,7 +500,7 @@ function buildSizeInputGrid(containerId, epi, mode){
       }).join('')}
     </div>`;
 }
-
+ 
 function openEntrada(){
   const epi = state.epis.find(e=>e.id===currentId);
   document.getElementById('entradaObs').value='';
@@ -510,7 +510,7 @@ function openEntrada(){
   buildSizeInputGrid('entradaSizeGrid', epi, 'entrada');
   closeAll(); show('overlayEntrada');
 }
-
+ 
 function openSaida(){
   const epi = state.epis.find(e=>e.id===currentId);
   document.getElementById('saidaFunc').value='';
@@ -520,14 +520,14 @@ function openSaida(){
   buildSizeInputGrid('saidaSizeGrid', epi, 'saida');
   closeAll(); show('overlaySaida');
 }
-
+ 
 function openEdit(){
   const epi = state.epis.find(e=>e.id===currentId);
   document.getElementById('editName').value = epi.name;
   document.getElementById('editMin').value = epi.minQty;
   closeAll(); show('overlayEdit');
 }
-
+ 
 function openNew(){
   document.getElementById('newName').value='';
   document.getElementById('newType').value='simple';
@@ -538,7 +538,7 @@ function openNew(){
   document.getElementById('newSizeGrid').classList.add('hidden');
   show('overlayNew');
 }
-
+ 
 function toggleNewSizeType(){
   const type = document.getElementById('newType').value;
   const isSimple = type==='simple';
@@ -555,7 +555,7 @@ function toggleNewSizeType(){
       </div>`).join('')}
     </div>`;
 }
-
+ 
 /* ── Save actions ── */
 function getSizeInputValues(prefix, type){
   const sizes = getSizes(type);
@@ -563,7 +563,7 @@ function getSizeInputValues(prefix, type){
   sizes.forEach(s=>{ obj[s]=parseInt(document.getElementById(`${prefix}_${s}`)?.value)||0; });
   return obj;
 }
-
+ 
 function saveEntrada(){
   const epi = state.epis.find(e=>e.id===currentId);
   const obs = document.getElementById('entradaObs').value.trim();
@@ -581,7 +581,7 @@ function saveEntrada(){
   state.history.push({type:'entrada',epiId:currentId,epiName:epi.name,qty,sizes,obs,ts:Date.now()});
   save(); closeAll(); render();
 }
-
+ 
 function saveSaida(){
   const epi = state.epis.find(e=>e.id===currentId);
   const func = document.getElementById('saidaFunc').value.trim();
@@ -604,7 +604,7 @@ function saveSaida(){
   state.history.push({type:'saida',epiId:currentId,epiName:epi.name,qty,sizes,func,ts:Date.now()});
   save(); closeAll(); render();
 }
-
+ 
 function saveEdit(){
   const name = document.getElementById('editName').value.trim();
   const minQty = parseInt(document.getElementById('editMin').value)||0;
@@ -613,13 +613,13 @@ function saveEdit(){
   epi.name=name; epi.minQty=minQty;
   save(); closeAll(); render();
 }
-
+ 
 function deleteEPI(){
   if(!confirm('Excluir este EPI?')) return;
   state.epis = state.epis.filter(e=>e.id!==currentId);
   save(); closeAll(); render();
 }
-
+ 
 function saveNew(){
   const name = document.getElementById('newName').value.trim();
   const type = document.getElementById('newType').value;
@@ -635,20 +635,20 @@ function saveNew(){
   state.epis.push(epi);
   save(); closeAll(); render();
 }
-
+ 
 function scrollToHistory(){ closeAll(); document.querySelector('.history-section').scrollIntoView({behavior:'smooth'}); }
-
+ 
 /* ── Export ── */
 function exportExcel(){
   const wb = XLSX.utils.book_new();
-
+ 
   // Sheet 1: Estoque simples
   const simple = state.epis.filter(e=>e.type==='simple');
   const ws1Data = [['Nome','Quantidade','Qtd. Mínima','Situação'],
     ...simple.map(e=>[e.name, e.qty||0, e.minQty, statusInfo(e).label])];
   const ws1 = XLSX.utils.aoa_to_sheet(ws1Data);
   XLSX.utils.book_append_sheet(wb, ws1, 'EPIs simples');
-
+ 
   // Sheet 2: Calçados
   const calcado = state.epis.filter(e=>e.type==='calcado');
   if(calcado.length){
@@ -656,7 +656,7 @@ function exportExcel(){
       ...calcado.map(e=>[e.name,...CALCADO_SIZES.map(s=>e.sizes[s]||0),totalQty(e),statusInfo(e).label])];
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws2Data), 'Calçados');
   }
-
+ 
   // Sheet 3: Roupas
   const roupa = state.epis.filter(e=>e.type==='roupa');
   if(roupa.length){
@@ -664,7 +664,7 @@ function exportExcel(){
       ...roupa.map(e=>[e.name,...ROUPA_SIZES.map(s=>e.sizes[s]||0),totalQty(e),statusInfo(e).label])];
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws3Data), 'Roupas');
   }
-
+ 
   // Sheet 4: Histórico
   const wsHist = [['Data','Tipo','EPI','Qtd Total','Tamanhos','Funcionário/Obs'],
     ...[...state.history].reverse().map(h=>{
@@ -675,10 +675,10 @@ function exportExcel(){
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(wsHist), 'Histórico');
   XLSX.writeFile(wb, 'controle-epi.xlsx');
 }
-
+ 
 // Backdrop close
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeAll();}));
-
+ 
 render();
 </script>
 </body>
