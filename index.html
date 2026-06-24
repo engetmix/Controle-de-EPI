@@ -641,38 +641,68 @@ function scrollToHistory(){ closeAll(); document.querySelector('.history-section
 /* ── Export ── */
 function exportExcel(){
   const wb = XLSX.utils.book_new();
- 
-  // Sheet 1: Estoque simples
+
+  // ── Aba 1: EPIs simples ──
   const simple = state.epis.filter(e=>e.type==='simple');
-  const ws1Data = [['Nome','Quantidade','Qtd. Mínima','Situação'],
-    ...simple.map(e=>[e.name, e.qty||0, e.minQty, statusInfo(e).label])];
+  const ws1Data = [
+    ['Nome','Quantidade','Qtd. Mínima','Situação'],
+    ...simple.map(e=>[e.name, e.qty||0, e.minQty, statusInfo(e).label])
+  ];
   const ws1 = XLSX.utils.aoa_to_sheet(ws1Data);
+  ws1['!cols'] = [{wch:22},{wch:12},{wch:14},{wch:14}];
   XLSX.utils.book_append_sheet(wb, ws1, 'EPIs simples');
- 
-  // Sheet 2: Calçados
+
+  // ── Aba 2: Calçados (37–44) ──
   const calcado = state.epis.filter(e=>e.type==='calcado');
-  if(calcado.length){
-    const ws2Data = [['Nome',...CALCADO_SIZES,'Total','Situação'],
-      ...calcado.map(e=>[e.name,...CALCADO_SIZES.map(s=>e.sizes[s]||0),totalQty(e),statusInfo(e).label])];
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws2Data), 'Calçados');
-  }
- 
-  // Sheet 3: Roupas
+  const ws2Data = [
+    ['Nome', ...CALCADO_SIZES.map(s=>'Tam. '+s), 'Total', 'Situação'],
+    ...calcado.map(e=>[
+      e.name,
+      ...CALCADO_SIZES.map(s => (e.sizes && e.sizes[s] != null ? e.sizes[s] : 0)),
+      totalQty(e),
+      statusInfo(e).label
+    ])
+  ];
+  const ws2 = XLSX.utils.aoa_to_sheet(ws2Data);
+  ws2['!cols'] = [{wch:22}, ...CALCADO_SIZES.map(()=>({wch:9})), {wch:8}, {wch:14}];
+  XLSX.utils.book_append_sheet(wb, ws2, 'Calçados');
+
+  // ── Aba 3: Roupas (M, G, GG) ──
   const roupa = state.epis.filter(e=>e.type==='roupa');
-  if(roupa.length){
-    const ws3Data = [['Nome',...ROUPA_SIZES,'Total','Situação'],
-      ...roupa.map(e=>[e.name,...ROUPA_SIZES.map(s=>e.sizes[s]||0),totalQty(e),statusInfo(e).label])];
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws3Data), 'Roupas');
-  }
- 
-  // Sheet 4: Histórico
-  const wsHist = [['Data','Tipo','EPI','Qtd Total','Tamanhos','Funcionário/Obs'],
+  const ws3Data = [
+    ['Nome', ...ROUPA_SIZES.map(s=>'Tam. '+s), 'Total', 'Situação'],
+    ...roupa.map(e=>[
+      e.name,
+      ...ROUPA_SIZES.map(s => (e.sizes && e.sizes[s] != null ? e.sizes[s] : 0)),
+      totalQty(e),
+      statusInfo(e).label
+    ])
+  ];
+  const ws3 = XLSX.utils.aoa_to_sheet(ws3Data);
+  ws3['!cols'] = [{wch:22}, ...ROUPA_SIZES.map(()=>({wch:9})), {wch:8}, {wch:14}];
+  XLSX.utils.book_append_sheet(wb, ws3, 'Roupas');
+
+  // ── Aba 4: Histórico ──
+  const wsHistData = [
+    ['Data','Tipo','EPI','Qtd Total','Tamanhos','Funcionário / Observação'],
     ...[...state.history].reverse().map(h=>{
-      const sizes = h.sizes ? Object.entries(h.sizes).filter(([,v])=>v>0).map(([k,v])=>`${k}:${v}`).join(', ') : '';
-      return [fmtDate(h.ts), h.type==='entrada'?'Entrada':'Saída', h.epiName,
-        (h.type==='entrada'?'+':'-')+h.qty, sizes, h.type==='entrada'?(h.obs||''):(h.func||'')];
-    })];
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(wsHist), 'Histórico');
+      const sizesStr = h.sizes
+        ? Object.entries(h.sizes).filter(([,v])=>v>0).map(([k,v])=>`${k}: ${v}`).join(', ')
+        : '';
+      return [
+        fmtDate(h.ts),
+        h.type==='entrada' ? 'Entrada' : 'Saída',
+        h.epiName,
+        (h.type==='entrada' ? '+' : '-') + h.qty,
+        sizesStr,
+        h.type==='entrada' ? (h.obs||'') : (h.func||'')
+      ];
+    })
+  ];
+  const ws4 = XLSX.utils.aoa_to_sheet(wsHistData);
+  ws4['!cols'] = [{wch:12},{wch:9},{wch:22},{wch:10},{wch:28},{wch:28}];
+  XLSX.utils.book_append_sheet(wb, ws4, 'Histórico');
+
   XLSX.writeFile(wb, 'controle-epi.xlsx');
 }
  
